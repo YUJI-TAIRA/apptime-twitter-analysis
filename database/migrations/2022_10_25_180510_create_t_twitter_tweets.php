@@ -15,14 +15,7 @@ return new class extends Migration
     {
         Schema::create('t_twitter_tweets', function (Blueprint $table) {
             $table->unsignedBigInteger('tweet_id')->primary()->comment('ツイートID');
-
-            // $table->foreignId('tweet_author_id')
-            //     ->constrained('t_twitter_users', 'user_id')
-            //     ->cascadeOnUpdate()
-            //     ->comment('ユーザーID');
-
-            // 制約をつけると後々の機能拡張時に
-
+            $table->unsignedBigInteger('tweet_author_id')->nullable(false)->comment('ユーザーID');
             $table->text('tweet_text', 500)->comment('ツイート本文');
             $table->integer('tweet_retweet_count')->comment('リツイート数');
             $table->integer('tweet_reply_count')->comment('リプライ数');
