@@ -3,14 +3,36 @@ namespace App\Consts;
 
 class TwitterConst
 {
-    // TODO 定数はDBに保存し設定画面から任意に変更出来るようにする
-    const MAX_RESULTS = 100;
-    const TWEETS_REQUEST_COUNT = 3;
-    const TWEETS_TOTAL_GET_COUNT = self::MAX_RESULTS * self::TWEETS_REQUEST_COUNT;
-    const MEMBERS_REQUEST_COUNT = 1;
-    const MEMBERS_TOTAL_GET_COUNT = self::MAX_RESULTS * self::MEMBERS_REQUEST_COUNT;
-    const LIST_ID = '1581302008174497794';
-    const ACTIVE_USER_DAYS = 90;
+    /* --------------------------------------
+    * Twitter APIリクエスト情報
+    * ---------------------------------------
+    /
+
+    /*
+    * Twitter API リスト情報取得パラメータ
+    * list.fields
+    * https://developer.twitter.com/en/docs/twitter-api/data-dictionary/object-model/lists
+    */
+    const LIST_FIELDS = 'created_at,description,follower_count,id,member_count,name,owner_id,private';
+
+    /*
+    * Twitter API ユーザー情報取得パラメータ
+    * user.fileds
+    * https://developer.twitter.com/en/docs/twitter-api/data-dictionary/object-model/user
+    */
+    const USER_FIELDS = 'id,created_at,description,location,name,pinned_tweet_id,profile_image_url,protected,public_metrics,url,username,verified,withheld';
+
+    /*
+    * Twitter API ツイート情報取得パラメータ
+    * tweet.fields
+    * https://developer.twitter.com/en/docs/twitter-api/data-dictionary/object-model/tweet
+    */
+    const TWEET_FIELDS = 'created_at,public_metrics,lang,author_id';
+
+    // Twitter APIリクエスト件数
+    const MAX_RESULTS = 100; // 1リクエストの数(max:100)
+    const TWEETS_REQUEST_COUNT = 3; // ツイート取得リクエスト回数
+    const MEMBERS_REQUEST_COUNT = 1; // メンバー取得リクエスト回数
 
     // ランキング取得用
     const RANKING_FOLLOWERS = 1;
