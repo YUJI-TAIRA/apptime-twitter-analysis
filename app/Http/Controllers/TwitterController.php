@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Services\TwitterService;
+use App\Services\TwitterApiService;
 use App\Consts\TwitterConst;
 
 class TwitterController extends Controller
@@ -18,7 +18,7 @@ class TwitterController extends Controller
     // 投稿
     public function index(Request $request)
     {
-        $tweets = $this->twitter->getPublicListInfo("1581302008174497794");
+        $tweets = $this->twitter->getPublicListTweets("1581302008174497794", 1);
         dd($tweets);
         return view('twitter', ['tweets' => $tweets]);
         // TODO ランキング取得

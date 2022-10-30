@@ -6,6 +6,7 @@ require "../vendor/autoload.php";
 
 use Abraham\TwitterOAuth\TwitterOAuth;
 use App\Consts\TwitterConst;
+use App\Helpers\Utils;
 use Exception;
 use Log;
 
@@ -47,7 +48,7 @@ class TwitterApiService
     public function getPublicListInfo(string $listId): ?array
     {
         $params = [
-            'list.fields' => 'created_at,description,follower_count,id,member_count,name,owner_id,private',
+            'list.fields' => TwitterConst::LIST_FIELDS,
         ];
         $response = $this->twitter->get("lists/{$listId}", $params);
         $this->checkResponseError($response);
@@ -66,7 +67,7 @@ class TwitterApiService
         $members = [];
         $params = [
             'max_results' => TwitterConst::MAX_RESULTS,
-            'user.fields' => 'id,created_at,description,location,name,pinned_tweet_id,profile_image_url,protected,public_metrics,url,username,verified,withheld',
+            'user.fields' => TwitterConst::USER_FIELDS,
         ];
         // 1リクエスト100件までのためループして結合
         for ($i = 0; $i < $requestCount; $i++) {
@@ -94,7 +95,7 @@ class TwitterApiService
         $tweets = [];
         $params = [
             'max_results' => TwitterConst::MAX_RESULTS,
-            'tweet.fields' => 'created_at,author_id,public_metrics,lang',
+            'tweet.fields' => TwitterConst::TWEET_FIELDS,
         ];
         // 1リクエスト100ツイートまでのためループして結合
         for ($i = 0; $i < $requestCount; $i++) {
@@ -102,11 +103,18 @@ class TwitterApiService
             $this->checkResponseError($response);
             $tweets = array_merge($tweets, $response->data);
             
-            if (!isset($response->meta->next_token)) {
-                return $tweets;
+            if (isset($response->meta->next_token)) {
+                $params['pagination_token'] = $response->meta->next_token;
+            } else {
+                break;
             }
-            $params['pagination_token'] = $response->meta->next_token;
         }
+
+        // レスポンス情報の整形
+        foreach ($tweets as $key => $tweet) {
+            unset($tweets[$key]->edit_history_tweet_ids);
+        }
+        $tweets = Utils::shapingPublicMetrics($tweets);
         return $tweets;
     }
 
@@ -124,7 +132,7 @@ class TwitterApiService
         $response = $this->twitter->get("users/{$userId}", $params);
 
         $this->checkResponseError($response);
-        return (array)$response->data;
+        return (array)$response->data->public_metrics;
     }
 
     /**
@@ -142,14 +150,6 @@ class TwitterApiService
             Log::error("{$cellerClass}@{$callerFunction}: {$response->errors[0]->message}"); 
             throw new Exception("{$cellerClass}@{$callerFunction}: {$response->errors[0]->message}");
         }
-    }
-
-    /**
-     * TwitterApiService destructor
-     */
-    public function __destruct()
-    {
-        $this->twitter = null;
     }
 
 }
