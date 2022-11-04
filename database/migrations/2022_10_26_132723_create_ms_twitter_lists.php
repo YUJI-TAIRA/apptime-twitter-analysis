@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('m_twitter_lists', function (Blueprint $table) {
+        Schema::create('ms_twitter_lists', function (Blueprint $table) {
             $table->bigIncrements('list_no')->comment('リスト番号');
             $table->unsignedBigInteger('list_id')->unique()->nullable(false)->comment('リストID');
             $table->string('list_name', 50)->comment('リスト名');
@@ -36,6 +36,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('t_twitter_lists');
+        Schema::dropIfExists('ms_twitter_lists');
     }
 };

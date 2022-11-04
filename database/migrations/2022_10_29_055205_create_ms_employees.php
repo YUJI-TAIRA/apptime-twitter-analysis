@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('m_employees', function (Blueprint $table) {
+        Schema::create('ms_employees', function (Blueprint $table) {
             $table->bigIncrements('employee_id')->comment('社員ID');
             $table->unsignedBigInteger('user_id')->nullable(false)->comment('Twitter ユーザーID');
             $table->string('name', 50)->comment('社員名');
@@ -31,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('m_employees');
+        Schema::dropIfExists('ms_employees');
     }
 };

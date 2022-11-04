@@ -13,15 +13,15 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('m_twitter_list_managements', function (Blueprint $table) {
+        Schema::create('ms_twitter_list_managements', function (Blueprint $table) {
 
             $table->foreignId('user_id')
-                ->constrained('m_twitter_users', 'user_id')
+                ->constrained('ms_twitter_users', 'user_id')
                 ->cascadeOnDelete()
                 ->comment('Twitter ID');
 
             $table->foreignId('list_id')
-                ->constrained('m_twitter_lists', 'list_id')
+                ->constrained('ms_twitter_lists', 'list_id')
                 ->cascadeOnDelete()
                 ->comment('リストID');
             
