@@ -17,18 +17,17 @@ return new class extends Migration
 
             $table->foreignId('user_id')
                 ->constrained('t_twitter_users', 'user_id')
-                ->cascadeOnUpdate()
+                ->cascadeOnDelete()
                 ->comment('Twitter ID');
 
             $table->foreignId('list_id')
                 ->constrained('t_twitter_lists', 'list_id')
-                ->cascadeOnUpdate()
+                ->cascadeOnDelete()
                 ->comment('リストID');
             
             // 複合主キーとする
             $table->primary(['user_id', 'list_id']);
 
-            $table->boolean('is_deleted')->default(false)->comment('削除フラグ');
             $table->timestamps();
         });
     }
