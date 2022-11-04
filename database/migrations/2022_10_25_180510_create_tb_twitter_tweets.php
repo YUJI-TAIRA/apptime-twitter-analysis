@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('t_twitter_tweets', function (Blueprint $table) {
+        Schema::create('tb_twitter_tweets', function (Blueprint $table) {
             $table->bigIncrements('tweet_no')->comment('ツイート番号');
             $table->unsignedBigInteger('tweet_id')->unique()->nullable(false)->comment('ツイートID');
             $table->unsignedBigInteger('tweet_author_id')->nullable(false)->comment('ユーザーID');
@@ -37,6 +37,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('t_twitter_tweets');
+        Schema::dropIfExists('tb_twitter_tweets');
     }
 };
