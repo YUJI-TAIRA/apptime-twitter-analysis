@@ -20,7 +20,7 @@ class Utils
     {
         $result = [];
         foreach ($data as $key => $value) {
-            $result[$prefix . $key] = $value;
+            $result[$prefix . '_' . $key] = $value;
         }
         return $result;
     }

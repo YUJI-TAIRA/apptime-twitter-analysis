@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('m_employees', function (Blueprint $table) {
-            $table->id();
+            $table->unsignedBigInteger('employee_id')->primary()->autoIncrement()->comment('社員ID');
             $table->unsignedBigInteger('user_id')->nullable(false)->comment('Twitter ユーザーID');
             $table->string('name', 50)->comment('社員名');
             $table->string('email', 100)->comment('メールアドレス');
