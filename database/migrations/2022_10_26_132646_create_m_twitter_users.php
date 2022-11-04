@@ -13,8 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('t_twitter_users', function (Blueprint $table) {
-            $table->unsignedBigInteger('user_id')->primary()->comment('ユーザーID');
+        Schema::create('m_twitter_users', function (Blueprint $table) {
+            $table->unsignedBigInteger('user_no')->primary()->autoIncrement()->comment('ユーザー番号');
+            $table->unsignedBigInteger('user_id')->unique()->comment('ユーザーID');
             $table->string('user_username', 50)->comment('スクリーンネーム Ex: @twitter');
             $table->string('user_name', 50)->comment('表示ユーザー名');
             $table->text('user_description')->comment('ユーザー説明文');
