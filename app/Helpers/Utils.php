@@ -14,15 +14,13 @@ class Utils
      * 
      * @param array  $data
      * @param string $prefix
-     * @return array
+     * @return void
      */
-    public static function addPrefixKeys(array $data, string $prefix): array
+    public static function addPrefixKeys(array &$data, string $prefix): void
     {
-        $result = [];
-        foreach ($data as $key => $value) {
-            $result[$prefix . '_' . $key] = $value;
-        }
-        return $result;
+        array_walk($data, function (&$value, $key) use ($prefix) {
+            $value = $prefix . '_' . $key;
+        });
     }
 
     /**
@@ -35,11 +33,10 @@ class Utils
     {
         $public_metrics = array_column($response, 'public_metrics');
 
-        $result = array_map(function ($response, $public_metrics) {
-            unset($response->public_metrics);
-            return array_merge((array)$response, (array)$public_metrics);
-        }, $response, $public_metrics);
-
-        return $result;
+        array_walk($response, function (&$value, $key) use ($public_metrics) {
+            $value = array_merge((array)$value, (array)$public_metrics[$key]);
+            unset($value['public_metrics']);
+        });
+        return $response;
     }
 }

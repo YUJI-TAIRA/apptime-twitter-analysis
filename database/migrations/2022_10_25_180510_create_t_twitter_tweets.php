@@ -14,8 +14,8 @@ return new class extends Migration
     public function up()
     {
         Schema::create('t_twitter_tweets', function (Blueprint $table) {
-            $table->unsignedBigInteger('tweet_no')->primary()->autoIncrement()->comment('ツイート番号');
-            $table->unsignedBigInteger('tweet_id')->unique()->comment('ツイートID');
+            $table->bigIncrements('tweet_no')->comment('ツイート番号');
+            $table->unsignedBigInteger('tweet_id')->unique()->nullable(false)->comment('ツイートID');
             $table->unsignedBigInteger('tweet_author_id')->nullable(false)->comment('ユーザーID');
             $table->text('tweet_text', 500)->comment('ツイート本文');
             $table->integer('tweet_retweet_count')->comment('リツイート数');

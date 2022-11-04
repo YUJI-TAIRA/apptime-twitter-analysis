@@ -69,18 +69,19 @@ class TwitterApiService
             'max_results' => TwitterConst::MAX_RESULTS,
             'user.fields' => TwitterConst::USER_FIELDS,
         ];
-        // 1リクエスト100件までのためループして結合
+
         for ($i = 0; $i < $requestCount; $i++) {
             $response = $this->twitter->get("lists/{$listId}/members", $params);
             $this->checkResponseError($response);
             $members = array_merge($members, $response->data);
             
-            if (!isset($response->meta->next_token)) {
-                return $members;
+            if (isset($response->meta->next_token)) {
+                $params['pagination_token'] = $response->meta->next_token;
+            } else {
+                break;
             }
-            $params['pagination_token'] = $response->meta->next_token;
         }
-        return $members;
+        return Utils::shapingPublicMetrics($members);
     }
     
     /**
@@ -109,13 +110,10 @@ class TwitterApiService
                 break;
             }
         }
+        // レスポンス情報の整形 
+        array_walk($tweets, function (&$tweet) { unset($tweet->edit_history_tweet_ids); });
 
-        // レスポンス情報の整形
-        foreach ($tweets as $key => $tweet) {
-            unset($tweets[$key]->edit_history_tweet_ids);
-        }
-        $tweets = Utils::shapingPublicMetrics($tweets);
-        return $tweets;
+        return Utils::shapingPublicMetrics($tweets);
     }
 
     /**

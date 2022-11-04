@@ -14,8 +14,8 @@ return new class extends Migration
     public function up()
     {
         Schema::create('m_twitter_lists', function (Blueprint $table) {
-            $table->unsignedBigInteger('list_no')->primary()->autoIncrement()->comment('リスト番号');
-            $table->unsignedBigInteger('list_id')->unique()->comment('リストID');
+            $table->bigIncrements('list_no')->comment('リスト番号');
+            $table->unsignedBigInteger('list_id')->unique()->nullable(false)->comment('リストID');
             $table->string('list_name', 50)->comment('リスト名');
             $table->integer('list_member_count')->comment('リストメンバー数');
             $table->integer('list_follower_count')->comment('リストフォロワー数');
