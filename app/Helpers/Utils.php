@@ -19,7 +19,7 @@ class Utils
     public static function addPrefixKeys(array &$data, string $prefix): void
     {
         array_walk($data, function (&$value, $key) use ($prefix) {
-            $value = $prefix . '_' . $key;
+            $value = $prefix . $key;
         });
     }
 

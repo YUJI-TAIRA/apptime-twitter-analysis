@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('ms_twitter_list_managements', function (Blueprint $table) {
+        Schema::create('ms_twitter_list_user', function (Blueprint $table) {
 
             $table->foreignId('user_id')
                 ->constrained('ms_twitter_users', 'user_id')
@@ -39,6 +39,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('m_twitter_list_managements');
+        Schema::dropIfExists('ms_twitter_list_user');
     }
 };

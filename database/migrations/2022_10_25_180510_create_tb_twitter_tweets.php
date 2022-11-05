@@ -24,6 +24,7 @@ return new class extends Migration
             $table->integer('tweet_quote_count')->comment('引用リツイート数');
             $table->string('tweet_lang', 10)->comment('言語');
             $table->timestamp('tweet_created_at')->nullable(false)->comment('ツイート日時');
+            $table->boolean('is_incentive_tweet')->default(false)->comment('インセンティブ対象ツイートフラグ(true: 対象 false: 非対象)');
             $table->boolean('is_deleted')->default(false)->comment('削除フラグ');
             $table->timestamps();
 
