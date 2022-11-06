@@ -6,11 +6,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Helpers\Utils;
 
 class MsTwitterUser extends Model
 {
     use HasFactory;
+    use SoftDeletes;
 
     protected $table = 'ms_twitter_users';
     protected $primaryKey = 'user_no';
@@ -32,7 +34,6 @@ class MsTwitterUser extends Model
         'user_url',
         'user_profile_image_url',
         'user_created_at',
-        'is_deleted',
     ];
 
     /**
@@ -49,7 +50,6 @@ class MsTwitterUser extends Model
             return;
         }
         foreach ($users as $user) {
-            Utils::addPrefixKeys($user, 'user_');
             self::updateOrCreate($user);
         }
     }
@@ -64,11 +64,11 @@ class MsTwitterUser extends Model
     }
     public function msEmployee()
     {
-        return $this->hasOne(MsEmployee::class, 'user_id', 'user_id');
+        return $this->belongsTo(MsEmployee::class, 'user_id', 'user_id');
     }
     public function msTwitterList()
     {
-        return $this->belongsToMany(MsTwitterList::class, 'ms_twitter_list_user', 'user_id', 'list_id');
+        return $this->belongsToMany(MsTwitterList::class, 'ms_twitter_list_user', 'user_id', 'list_id')->withTimestamps();
     }
 
 }

@@ -39,4 +39,27 @@ class Utils
         });
         return $response;
     }
+
+    /**
+     * 連想配列のソートを実行
+     * 
+     * @param array  $data
+     * @param string $sortKey
+     * @param string $sortType
+     * @return array
+     */
+    public static function sortArrayByKey(array $data, string $sortKey, string $sortType = 'asc'): array
+    {
+        $sortType = strtolower($sortType);
+        if ($sortType === 'asc') {
+            usort($data, function ($a, $b) use ($sortKey) {
+                return $a[$sortKey] <=> $b[$sortKey];
+            });
+        } elseif ($sortType === 'desc') {
+            usort($data, function ($a, $b) use ($sortKey) {
+                return $b[$sortKey] <=> $a[$sortKey];
+            });
+        }
+        return $data;
+    }
 }

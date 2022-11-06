@@ -6,7 +6,14 @@ class TwitterConst
     /* --------------------------------------
     * Twitter APIリクエスト情報
     * ---------------------------------------
-    * /
+    */
+    // Twitter APIリクエスト件数
+    const MAX_RESULTS = 100; // 1リクエストの数(max:100)
+    const TWEETS_REQUEST_COUNT = 3; // ツイート取得リクエスト回数
+    const MEMBERS_REQUEST_COUNT = 1; // メンバー取得リクエスト回数
+
+    const TWEETS_TOTAL_COUNT = TWEETS_REQUEST_COUNT * MAX_RESULTS; // ツイート取得リクエスト総数
+    const MEMBERS_TOTAL_COUNT = MEMBERS_REQUEST_COUNT * MAX_RESULTS; // メンバー取得リクエスト総数
 
     /*
     * Twitter API リスト情報取得パラメータ
@@ -28,14 +35,6 @@ class TwitterConst
     * https://developer.twitter.com/en/docs/twitter-api/data-dictionary/object-model/tweet
     */
     const TWEET_FIELDS = 'created_at,public_metrics,lang,author_id';
-
-    // Twitter APIリクエスト件数
-    const MAX_RESULTS = 100; // 1リクエストの数(max:100)
-    const TWEETS_REQUEST_COUNT = 3; // ツイート取得リクエスト回数
-    const MEMBERS_REQUEST_COUNT = 1; // メンバー取得リクエスト回数
-
-    const TWEETS_TOTAL_COUNT = TWEETS_REQUEST_COUNT * MAX_RESULTS; // ツイート取得リクエスト総数
-    const MEMBERS_TOTAL_COUNT = MEMBERS_REQUEST_COUNT * MAX_RESULTS; // メンバー取得リクエスト総数
 
     // TODO: ランキング取得用
     const RANKING_FOLLOWERS = 1;

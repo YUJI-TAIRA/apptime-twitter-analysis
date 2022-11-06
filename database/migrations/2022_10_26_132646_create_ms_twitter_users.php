@@ -28,8 +28,8 @@ return new class extends Migration
             $table->string('user_url', 100)->comment('URL');
             $table->string('user_profile_image_url', 100)->comment('プロフィール画像URL');
             $table->timestamp('user_created_at')->comment('ユーザー作成日時');
-            $table->boolean('is_deleted')->default(false)->comment('削除フラグ');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

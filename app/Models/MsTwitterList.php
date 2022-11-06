@@ -28,21 +28,23 @@ class MsTwitterList extends Model
         'list_owner_id',
         'list_created_at',
         'is_incentive',
-        'is_deleted',
     ];
+
+    const IS_INCENTIVE_TRUE = 1;
+    const IS_INCENTIVE_FALSE = 0;
 
     /**
      * list_idを配列で取得
      * 
      * @return array
      */
-    public static function getListId(): array
+    public static function getListIds(): array
     {
         return self::select('list_id')->get()->toArray();
     }
 
     /**
-     * リスト情報を保存
+     * 複数のリスト情報を保存
      * 
      * @param array $lists
      * @return void
@@ -56,9 +58,19 @@ class MsTwitterList extends Model
         }
         // 実行
         foreach ($lists as $list) {
-            Utils::addPrefixKeys($list, 'list_');
             self::updateOrCreate($list);
         }
+    }
+
+    /**
+     * リスト情報を保存
+     * 
+     * @param array $list
+     * @return void
+     */
+    public static function saveList(array $list): void
+    {
+        self::updateOrCreate($list);
     }
 
     /*
@@ -66,6 +78,6 @@ class MsTwitterList extends Model
     */
     public function msTwitterUser()
     {
-        return $this->belongsToMany(MsTwitterUser::class, 'ms_twitter_list_user', 'list_id', 'user_id');
+        return $this->belongsToMany(MsTwitterUser::class, 'ms_twitter_list_user', 'list_id', 'user_id')->withTimestamps();
     }
 }

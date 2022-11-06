@@ -24,7 +24,6 @@ return new class extends Migration
             $table->unsignedBigInteger('list_owner_id')->comment('リストオーナーID');
             $table->timestamp('list_created_at')->comment('リスト作成日時');
             $table->boolean('is_incentive')->default(false)->comment('インセンティブ対象フラグ(true: 対象 false: 非対象)');
-            $table->boolean('is_deleted')->default(false)->comment('削除フラグ');
             $table->timestamps();
         });
     }

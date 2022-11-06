@@ -59,11 +59,12 @@ class TwitterApiService
      * 公開リストからユーザー情報を取得
      * 
      * @param string $listId
-     * @param int    $requestCount
      * @return array|null
      */
-    public function getPublicListMembers(string $listId, int $requestCount): ?array
+    public function getPublicListMembers(string $listId): ?array
     {
+        $requestCount = TwitterConst::MEMBERS_REQUEST_COUNT;
+
         $members = [];
         $params = [
             'max_results' => TwitterConst::MAX_RESULTS,
@@ -88,11 +89,12 @@ class TwitterApiService
     * 公開リストからツイート情報を取得
     *
     * @param string $listId
-    * @param int    $requestCount
     * @return array
     */
-    public function getPublicListTweets(string $listId, int $requestCount): array
+    public function getPublicListTweets(string $listId): array
     {
+        $requestCount = TwitterConst::TWEETS_REQUEST_COUNT;
+        
         $tweets = [];
         $params = [
             'max_results' => TwitterConst::MAX_RESULTS,

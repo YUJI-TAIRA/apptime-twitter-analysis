@@ -19,8 +19,8 @@ return new class extends Migration
             $table->string('name', 50)->comment('社員名');
             $table->string('email', 100)->comment('メールアドレス');
             $table->boolean('is_incentive_employee')->default(true)->comment('インセンティブ対象フラグ(true: 対象 false: 非対象)');
-            $table->boolean('is_deleted')->default(false)->comment('削除フラグ');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -18,15 +18,4 @@ class MsTwitterListUser extends Model
         'user_id',
         'list_id',
     ];
-    /*
-    * リレーション
-    */
-    public function msTwitterUser()
-    {
-        return $this->belongsToMany(MsTwitterUser::class, 'user_id', 'user_id');
-    }
-    public function msTwitterList()
-    {
-        return $this->belongsToMany(MsTwitterList::class, 'list_id', 'list_id');
-    }
 }
