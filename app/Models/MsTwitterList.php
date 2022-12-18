@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Helpers\Utils;
+use Exception;
 
 class MsTwitterList extends Model
 {
@@ -40,7 +41,15 @@ class MsTwitterList extends Model
      */
     public static function getListIds(): array
     {
-        return self::select('list_id')->get()->toArray();
+        $listIds = self::select('list_id')
+            ->get()
+            ->toArray();
+
+        if (empty($listIds)) {
+            Log::error('リストIDが登録されていません。');
+            throw new Exception('リストIDが登録されていません。');
+        }
+        return $listIds;
     }
 
     /**
@@ -54,7 +63,7 @@ class MsTwitterList extends Model
         // TODO: 仮実装 動作検証まだ
         if (empty($lists)) {
             Log::error('保存するリスト情報がありません。');
-            return;
+            throw new Exception('保存するリスト情報がありません。');
         }
         // 実行
         foreach ($lists as $list) {
@@ -70,7 +79,13 @@ class MsTwitterList extends Model
      */
     public static function saveList(array $list): void
     {
+        if (!isset($list['list_id'])) {
+            Log::warning('リストIDがセットされていません。');
+            throw new Exception('リストIDがセットされていません。');
+        }
+        Utils::addPrefixKeys($list, 'list_');
         self::updateOrCreate($list);
+        Log::info('リストID: ' . $list['list_id'] . 'の情報を更新しました。');
     }
 
     /*

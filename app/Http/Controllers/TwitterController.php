@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\TwitterApiService;
-use App\Consts\TwitterConst;
+use App\Consts\Consts;
 
 class TwitterController extends Controller
 {
@@ -22,9 +22,9 @@ class TwitterController extends Controller
         dd($tweets);
         return view('twitter', ['tweets' => $tweets]);
         // TODO ランキング取得
-        // $ranking['followers'] = $twitter->getRanking(TwitterConst::RANKING_FOLLOWERS);
-        // $ranking['likes'] = $twitter->getRanking(TwitterConst::RANKING_LIKES);
-        // $ranking['impressions'] = $twitter->getRanking(TwitterConst::RANKING_IMPRESSIONS);
+        // $ranking['followers'] = $twitter->getRanking(Consts::RANKING_FOLLOWERS);
+        // $ranking['likes'] = $twitter->getRanking(Consts::RANKING_LIKES);
+        // $ranking['impressions'] = $twitter->getRanking(Consts::RANKING_IMPRESSIONS);
 
 
     }

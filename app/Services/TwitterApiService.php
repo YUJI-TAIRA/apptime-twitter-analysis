@@ -2,10 +2,8 @@
 
 namespace App\Services;
 
-require "../vendor/autoload.php";
-
 use Abraham\TwitterOAuth\TwitterOAuth;
-use App\Consts\TwitterConst;
+use App\Consts\Consts;
 use App\Helpers\Utils;
 use Exception;
 use Log;
@@ -48,10 +46,11 @@ class TwitterApiService
     public function getPublicListInfo(string $listId): ?array
     {
         $params = [
-            'list.fields' => TwitterConst::LIST_FIELDS,
+            'list.fields' => Consts::LIST_FIELDS,
         ];
         $response = $this->twitter->get("lists/{$listId}", $params);
         $this->checkResponseError($response);
+
         return (array)$response->data;
     }
 
@@ -63,12 +62,13 @@ class TwitterApiService
      */
     public function getPublicListMembers(string $listId): ?array
     {
-        $requestCount = TwitterConst::MEMBERS_REQUEST_COUNT;
+        var_dump($listId);
+        $requestCount = Consts::MEMBERS_REQUEST_COUNT;
 
         $members = [];
         $params = [
-            'max_results' => TwitterConst::MAX_RESULTS,
-            'user.fields' => TwitterConst::USER_FIELDS,
+            'max_results' => Consts::MAX_RESULTS,
+            'user.fields' => Consts::USER_FIELDS,
         ];
 
         for ($i = 0; $i < $requestCount; $i++) {
@@ -93,12 +93,12 @@ class TwitterApiService
     */
     public function getPublicListTweets(string $listId): array
     {
-        $requestCount = TwitterConst::TWEETS_REQUEST_COUNT;
+        $requestCount = Consts::TWEETS_REQUEST_COUNT;
         
         $tweets = [];
         $params = [
-            'max_results' => TwitterConst::MAX_RESULTS,
-            'tweet.fields' => TwitterConst::TWEET_FIELDS,
+            'max_results' => Consts::MAX_RESULTS,
+            'tweet.fields' => Consts::TWEET_FIELDS,
         ];
         // 1リクエスト100ツイートまでのためループして結合
         for ($i = 0; $i < $requestCount; $i++) {
@@ -112,10 +112,8 @@ class TwitterApiService
                 break;
             }
         }
-        // レスポンス情報の整形 
-        array_walk($tweets, function (&$tweet) { unset($tweet->edit_history_tweet_ids); });
-
-        return Utils::shapingPublicMetrics($tweets);
+        // レスポンス情報の整形
+        return Utils::shapingResponse($tweets);
     }
 
     /**
@@ -144,11 +142,16 @@ class TwitterApiService
     private function checkResponseError(object $response): void
     {
         if (isset($response->errors)) {
-            // クラス名・メソッド名を呼び出し元より取得
             $cellerClass = debug_backtrace()[1]['class'];
             $callerFunction = debug_backtrace()[1]['function'];
-            Log::error("{$cellerClass}@{$callerFunction}: {$response->errors[0]->message}"); 
-            throw new Exception("{$cellerClass}@{$callerFunction}: {$response->errors[0]->message}");
+            Log::error("{$cellerClass}@{$callerFunction}: {$response->errors[0]->detail}"); 
+            throw new Exception("{$cellerClass}@{$callerFunction}: {$response->errors[0]->detail}");
+        }
+        if (!isset($response->data)) {
+            $cellerClass = debug_backtrace()[1]['class'];
+            $callerFunction = debug_backtrace()[1]['function'];
+            Log::warning("{$cellerClass}@{$callerFunction}: レスポンスデータがありません。");
+            throw new Exception("{$cellerClass}@{$callerFunction}: レスポンスデータがありません。");
         }
     }
 

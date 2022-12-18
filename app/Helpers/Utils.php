@@ -3,7 +3,8 @@
 namespace App\Helpers;
 
 use Abraham\TwitterOAuth\TwitterOAuth;
-use App\Consts\TwitterConst;
+use App\Consts\Consts;
+use App\Models\TbTwitterTweet;
 use Exception;
 use Log;
 
@@ -18,9 +19,7 @@ class Utils
      */
     public static function addPrefixKeys(array &$data, string $prefix): void
     {
-        array_walk($data, function (&$value, $key) use ($prefix) {
-            $value = $prefix . $key;
-        });
+        array_walk($data, fn (&$value, $key) => $value = $prefix . $key);
     }
 
     /**
@@ -41,6 +40,48 @@ class Utils
     }
 
     /**
+     * TwitterAPIのレスポンス情報を整形する
+     * 
+     * @param array $tweets
+     * @param bool  $isExcludeRetweet
+     * @return array
+     */
+    public static function shapingResponse(array $tweets): array
+    {
+        // edit_history_tweet_idsを削除
+        array_walk($tweets, function (&$tweet) { unset($tweet->edit_history_tweet_ids); });
+        // referenced_tweetsが含まれている場合
+        array_walk($tweets, function (&$tweet) {
+            if (isset($tweet->referenced_tweets)) {
+                $referenced_tweet = $tweet->referenced_tweets[0];
+                // リツイートの場合
+                if ($referenced_tweet->type === 'retweeted') {
+                    $tweet->source_tweet_id = $referenced_tweet->id;
+                    $tweet->type = TbTwitterTweet::TWEET_TYPE_RETWEET;
+                    unset($tweet->referenced_tweets);
+                // 引用ツイートの場合
+                } elseif ($referenced_tweet->type === 'quoted') {
+                    $tweet->source_tweet_id = $referenced_tweet->id;
+                    $tweet->type = TbTwitterTweet::TWEET_TYPE_QUOTE;
+                    unset($tweet->referenced_tweets);
+                } else {
+                    unset($tweet->referenced_tweets);
+                }
+            }
+            // リプライの場合
+            if (isset($tweet->in_reply_to_user_id)) {
+                $tweet->is_reply = TbTwitterTweet::IS_REPLY_TRUE;
+                unset($tweet->in_reply_to_user_id);
+            }
+            // public_metricsを展開して元のtweetsに結合
+            $tweet = array_merge((array)$tweet, (array)$tweet->public_metrics);
+            unset($tweet['public_metrics']);
+            
+        });
+        return (array)$tweets;
+    }
+
+    /**
      * 連想配列のソートを実行
      * 
      * @param array  $data
@@ -52,13 +93,9 @@ class Utils
     {
         $sortType = strtolower($sortType);
         if ($sortType === 'asc') {
-            usort($data, function ($a, $b) use ($sortKey) {
-                return $a[$sortKey] <=> $b[$sortKey];
-            });
+            usort($data, fn($a, $b) => $a[$sortKey] <=> $b[$sortKey]);
         } elseif ($sortType === 'desc') {
-            usort($data, function ($a, $b) use ($sortKey) {
-                return $b[$sortKey] <=> $a[$sortKey];
-            });
+            usort($data, fn($a, $b) => $b[$sortKey] <=> $a[$sortKey]);
         }
         return $data;
     }

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Helpers\Utils;
+use Exception;
 
 class MsTwitterUser extends Model
 {
@@ -45,16 +46,43 @@ class MsTwitterUser extends Model
     public static function saveUsers(array $users): void
     {
         // TODO: 仮実装 動作検証まだ ユーザー情報は少ないからupdateOrCreateでいいかも
-        if (empty($users)) {
-            Log::error('保存するユーザー情報がありません。');
-            return;
+        if (!isset($users)) {
+            Log::warning('保存するユーザー情報がありません。');
+            throw new Exception('保存するユーザー情報がありません。');
         }
         foreach ($users as $user) {
+            Utils::addPrefixKeys($user, 'user_');
             self::updateOrCreate($user);
         }
+        Log::info(count($users) . '件のユーザー情報を更新しました。');
     }
 
+    /**
+     * 先月のインセンティブ対象のツイート・ユーザーを取得
+     * 
+     * @param int $limitLikeCount
+     * @return Collection
+     */
+    public static function getIncentiveTweets(int $limitLikeCount)
+    {
+        $firstDayPreviousMonth = new \DateTime('first day of previous month');
+        $lastDayPreviousMonth = new \DateTime('last day of previous month');
 
+        return self::with([
+                'tbTwitterTweets' => fn($query) => $query
+                    ->selectRaw('sum(case when tweet_like_count >= '. $limitLikeCount .'then'. $limitLikeCount .'.else tweet_like_count end) as likes_count')
+                    ->selectRaw('sum(tweet_retweet_count) as retweets_count')
+                    ->selectRaw('count(tweet_id) as tweets_count')
+                    ->whereBetween('tweet_created_at', [$firstDayPreviousMonth, $lastDayPreviousMonth])
+                    ->where('is_incentive_tweet', self::IS_INCENTIVE_TWEET_TRUE)
+                    ->groupBy(Tables::TB_TWITTER_TWEETS.'.tweet_author_id')
+                    ->orderByDesc('tweet_created_at'),
+                'msEmployee' => fn($query) => $query
+                    ->where('is_incentive_user', MsTwitterUser::IS_INCENTIVE_USER_TRUE)
+                ])
+                ->get();
+
+    }
     /*
     * リレーション
     */
@@ -64,7 +92,7 @@ class MsTwitterUser extends Model
     }
     public function msEmployee()
     {
-        return $this->belongsTo(MsEmployee::class, 'user_id', 'user_id');
+        return $this->hasOne(MsEmployee::class, 'user_id', 'user_id');
     }
     public function msTwitterList()
     {

@@ -27,6 +27,6 @@ class MsEmployee extends Model
 
     public function msTweetUser()
     {
-        return $this->hasOne(MsTweetUser::class, 'user_id', 'user_id');
+        return $this->belongsTo(MsTweetUser::class, 'user_id', 'user_id');
     }
 }

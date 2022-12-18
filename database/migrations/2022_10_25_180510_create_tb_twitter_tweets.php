@@ -23,8 +23,12 @@ return new class extends Migration
             $table->integer('tweet_like_count')->index()->comment('いいね数');
             $table->integer('tweet_quote_count')->comment('引用リツイート数');
             $table->string('tweet_lang', 10)->comment('言語');
+            $table->integer('tweet_type')->default(0)->comment('ツイート種別(0: 通常ツイート 1: リツイート 2: 引用リツイート)');
+            $table->unsignedBigInteger('tweet_source_tweet_id')->nullable()->comment('ツイート元ツイートID');
+            $table->boolean('tweet_is_reply')->default(false)->comment('リプライフラグ(1: リプライ 0: 通常ツイート)');
             $table->timestamp('tweet_created_at')->index()->nullable(false)->comment('ツイート日時');
-            $table->boolean('is_incentive_tweet')->default(true)->comment('インセンティブ対象ツイートフラグ(true: 対象 false: 非対象)');
+            $table->boolean('is_incentive_tweet')->default(true)->comment('インセンティブ対象ツイートフラグ(1: 対象 0: 非対象)');
+            $table->boolean('is_best_of_tweet')->default(false)->comment('ベスト・オブ・ツイートフラグ(1: ベスト・オブ・ツイート 0: 通常ツイート)');
             $table->timestamps();
             $table->softDeletes();
         });

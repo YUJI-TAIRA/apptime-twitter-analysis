@@ -41,6 +41,7 @@ class AddList extends Command
         } catch (Exception $e) {
             Log::error("[{$now}] リストの作成に失敗しました。list_id: {$listId}");
             Log::error($e->getMessage());
+            echo ($e->getMessage());
             return Command::FAILURE;
         }
         

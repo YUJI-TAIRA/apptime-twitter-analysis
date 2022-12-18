@@ -1,15 +1,17 @@
 <?php
+
 namespace App\Consts;
 
-class TwitterConst
+class Consts
 {
     /* --------------------------------------
     * Twitter APIリクエスト情報
     * ---------------------------------------
     */
+
     // Twitter APIリクエスト件数
     const MAX_RESULTS = 100; // 1リクエストの数(max:100)
-    const TWEETS_REQUEST_COUNT = 3; // ツイート取得リクエスト回数
+    const TWEETS_REQUEST_COUNT = 1; // ツイート取得リクエスト回数
     const MEMBERS_REQUEST_COUNT = 1; // メンバー取得リクエスト回数
 
     const TWEETS_TOTAL_COUNT = TWEETS_REQUEST_COUNT * MAX_RESULTS; // ツイート取得リクエスト総数
@@ -34,7 +36,7 @@ class TwitterConst
     * tweet.fields
     * https://developer.twitter.com/en/docs/twitter-api/data-dictionary/object-model/tweet
     */
-    const TWEET_FIELDS = 'created_at,public_metrics,lang,author_id';
+    const TWEET_FIELDS = 'created_at,public_metrics,lang,author_id,referenced_tweets,in_reply_to_user_id';
 
     // TODO: ランキング取得用
     const RANKING_FOLLOWERS = 1;
